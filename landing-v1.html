@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGMEducore | The Modern School Operating System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Grid+Double:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], },
+                    colors: {
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 900: '#0f172a', },
+                        accent: { green: '#10b981', purple: '#8b5cf6', orange: '#f97316', cyan: '#06b6d4' }
+                    },
+                    animation: {
+                        'breathe': 'breathe 3s ease-in-out infinite',
+                        'marquee': 'marquee 30s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 7s ease-in-out 3s infinite',
+                        'float-slow': 'float 10s ease-in-out 1s infinite',
+                    },
+                    keyframes: {
+                        breathe: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.04)' },
+                        },
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .bitcount-grid-double {
+            font-family: "Bitcount Grid Double", system-ui;
+            font-optical-sizing: auto;
+            font-weight: 500;
+            font-style: normal;
+            font-variation-settings:
+                "slnt" 0,
+                "CRSV" 0.5,
+                "ELSH" 0,
+                "ELXP" 0;
+        }
+
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
+
+        /* Scale the whole page down slightly on larger screens (rem-based sizing) */
+        @media (min-width: 1024px) { html { font-size: 90%; } }
+
+        .hero-stage {
+            perspective: 1000px;
+        }
+
+        .hero-glow {
+            position: absolute; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, rgba(255,255,255,0) 70%);
+            top: -100px; left: 50%; transform: translateX(-50%);
+            z-index: -1; pointer-events: none;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        /* Live Revenue Bars Animation */
+        .bar-anim {
+            height: var(--h-start);
+            animation: liveBar var(--dur) ease-in-out infinite alternate;
+            will-change: height;
+        }
+
+        @keyframes liveBar {
+            0% {
+                height: var(--h-start);
+            }
+            100% {
+                height: var(--h-end);
+            }
+        }
+
+        /* Ensure bars animate smoothly */
+        .reveal-item {
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        
+
+        .dynamic-island-shell {
+            position: relative;
+            background: rgba(15, 23, 42, 0.96);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(18px);
+            transform-origin: center top;
+            transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), padding 0.85s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.85s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        #main-nav {
+            transition: top 0.85s cubic-bezier(0.22, 1, 0.36, 1), padding 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .nav-brand-icon,
+        .nav-brand-text,
+        .nav-link,
+        .nav-cta,
+        #mobile-btn {
+            transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), font-size 0.85s cubic-bezier(0.22, 1, 0.36, 1), padding 0.85s cubic-bezier(0.22, 1, 0.36, 1), gap 0.85s cubic-bezier(0.22, 1, 0.36, 1), width 0.85s cubic-bezier(0.22, 1, 0.36, 1), height 0.85s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        #main-nav.nav-scrolled .dynamic-island-shell {
+            transform: scale(0.94);
+            padding-top: 0.65rem;
+            padding-bottom: 0.65rem;
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        #main-nav.nav-scrolled {
+            top: 0.75rem;
+        }
+
+        #main-nav.nav-scrolled .nav-brand-icon {
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 0.875rem;
+        }
+
+        #main-nav.nav-scrolled .nav-brand-text {
+            transform: scale(0.94);
+        }
+
+        #main-nav.nav-scrolled .nav-link {
+            transform: scale(0.94);
+        }
+
+        #main-nav.nav-scrolled .nav-cta {
+            transform: scale(0.94);
+        }
+
+        #main-nav.nav-scrolled #mobile-btn {
+            transform: scale(0.94);
+        }
+
+        @media (max-width: 767px) {
+            #main-nav.nav-scrolled .dynamic-island-shell {
+                transform: scale(0.97);
+            }
+        }
+
+        #mobile-menu {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.985), rgba(15, 23, 42, 0.97));
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(100%);
+        }
+        #mobile-menu.open { transform: translateX(0); }
+
+        .btn-gradient {
+            background: linear-gradient(90deg, #1d4ed8 0%, #3b82f6 100%);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4), 0 8px 10px -6px rgba(59, 130, 246, 0.1);
+        }
+        .btn-gradient:hover { background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%); }
+        
+        .cta-magnetic-glow:hover {
+            animation: none;
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.6), 0 0 80px rgba(59, 130, 246, 0.2);
+        }
+
+        .role-glow {
+           
+            transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+        }
+        .role-glow:hover {
+            box-shadow: 0 12px 28px rgba(59, 130, 246, 0.12), 0 0 22px rgba(59, 130, 246, 0.10);
+            transform: translateY(-2px);
+        }
+        .role-screen {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover; object-position: top center;
+            opacity: 0; transform: scale(1.02);
+            filter: blur(4px);
+            transition: opacity 1.1s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+                        filter 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .role-screen.is-active { opacity: 1; transform: scale(1); filter: blur(0); }
+        @media (prefers-reduced-motion: reduce) {
+            .role-screen { transition: none; transform: none; }
+        }
+
+        .step-circle {
+            transition: background-color 0.45s ease, color 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease, transform 0.45s ease;
+        }
+        .step-circle.is-reached {
+            border-color: #3b82f6;
+            box-shadow: 0 0 18px rgba(59, 130, 246, 0.45);
+        }
+        .step-circle.is-current {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+            color: #ffffff;
+            transform: scale(1.06);
+        }
+
+        .role-item-active {
+            border-color: #e2e8f0;
+            background-color: #ffffff;
+            box-shadow: 0 12px 28px rgba(59, 130, 246, 0.12), 0 0 22px rgba(59, 130, 246, 0.10);
+        }
+
+        .nav-link { position: relative; padding: 8px 14px; border-radius: 9999px; transition: background-color 0.35s ease, color 0.35s ease, transform 0.85s cubic-bezier(0.22, 1, 0.36, 1); }
+        .nav-link:hover { background-color: rgba(255, 255, 255, 0.08); color: #ffffff; transform: translateY(-1px); }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .frosted-network-shell {
+            background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+            backdrop-filter: blur(26px) saturate(180%);
+            -webkit-backdrop-filter: blur(26px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.26);
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.10), inset 0 1px 0 rgba(255,255,255,0.28);
+        }
+
+        .frosted-node {
+            background: linear-gradient(135deg, rgba(255,255,255,0.28), rgba(255,255,255,0.12));
+            backdrop-filter: blur(22px) saturate(180%);
+            -webkit-backdrop-filter: blur(22px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.35);
+            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.14), inset 0 1px 0 rgba(255,255,255,0.30);
+        }
+
+
+        .moving-shape {
+            stroke-dasharray: 100, 1000;
+            stroke-dashoffset: 100;
+            animation: flowThrough 3s linear infinite;
+            opacity: 0.9;
+            filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.1));
+        }
+
+        @keyframes flowThrough {
+            to { stroke-dashoffset: -500; }
+        }
+        /* Geometric Floating Shapes (Aesthetic from landing.php) */
+        .floating-field {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-field .float-shape {
+            position: absolute;
+            left: var(--x);
+            top: var(--y);
+            width: var(--size);
+            height: var(--size);
+            animation: fieldFloat var(--float, 8s) ease-in-out infinite;
+            animation-delay: var(--delay, 0s);
+            --parallax-x: 0px;
+            --parallax-y: 0px;
+            --scroll-offset: 0px;
+            will-change: transform;
+        }
+
+        .float-shape {
+            width: 100%;
+            height: 100%;
+            opacity: 0.88;
+            position: relative;
+            border-width: 1px;
+            border-style: solid;
+        }
+
+        @keyframes fieldFloat {
+            0%, 100% {
+                transform: translate3d(var(--parallax-x, 0px), calc(var(--parallax-y, 0px) + var(--scroll-offset, 0px)), 0) rotate(var(--shape-rotate, 0deg));
+            }
+            50% {
+                transform: translate3d(var(--parallax-x, 0px), calc(var(--parallax-y, 0px) + var(--scroll-offset, 0px) - 18px), 0) rotate(var(--shape-rotate, 0deg));
+            }
+        }
+
+        /* Color Palette */
+        .color-blue   { background: rgba(14, 86, 255, 0.58); border-color: rgba(14, 86, 255, 0.86); }
+        .color-orange { background: rgba(249, 115, 22, 0.52);  border-color: rgba(249, 115, 22, 0.82); }
+        .color-red    { background: rgba(239, 68, 68, 0.5);   border-color: rgba(239, 68, 68, 0.8); }
+        .color-yellow { background: rgba(234, 179, 8, 0.48);  border-color: rgba(234, 179, 8, 0.78); }
+        .color-green  { background: rgba(34, 197, 94, 0.44);  border-color: rgba(34, 197, 94, 0.72); }
+
+        /* Geometric Shapes */
+        .shape-circle   { border-radius: 9999px; }
+        .shape-squircle { border-radius: 12px; }
+        .shape-diamond  { border-radius: 8px; --shape-rotate: 45deg; }
+        .shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); border-radius: 0; border: none; }
+
+        /* Remove old Tailwind glows */
+        .scroll-parallax, .mouse-parallax {
+            filter: none !important;
+        }
+
+        .hero-title {
+            font-size: 2.15rem;
+            line-height: 1.05;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            line-height: 1.08;
+        }
+
+        .section-title-lg {
+            font-size: 2.35rem;
+            line-height: 1.05;
+        }
+
+        @media (min-width: 640px) {
+            .hero-title {
+                font-size: 3.1rem;
+            }
+
+            .section-title {
+                font-size: 2.35rem;
+            }
+
+            .section-title-lg {
+                font-size: 2.85rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 3.65rem;
+            }
+
+            .section-title {
+                font-size: 2.85rem;
+            }
+
+            .section-title-lg {
+                font-size: 3.4rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .hero-title {
+                font-size: 4rem;
+            }
+
+            .section-title {
+                font-size: 2.1rem;
+            }
+
+            .section-title-lg {
+                font-size: 3.8rem;
+            }
+        }
+
+        /* --- Header state + neumorphic/material visual system patch --- */
+        :root {
+            --surface-bg: #ffffff;
+            --surface-border: rgba(203, 213, 225, 0.72);
+            --material-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 12px 30px rgba(15, 23, 42, 0.08);
+            --material-shadow-hover: 0 4px 10px rgba(15, 23, 42, 0.08), 0 22px 48px rgba(15, 23, 42, 0.12);
+            --neo-highlight: rgba(255, 255, 255, 0.96);
+            --neo-shadow: rgba(15, 23, 42, 0.13);
+        }
+
+        body.mobile-menu-open {
+            overflow: hidden;
+        }
+
+        #main-nav .dynamic-island-shell {
+            background: transparent;
+            border-color: transparent;
+            box-shadow: none;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            transform: none;
+        }
+
+        #main-nav .nav-brand-icon {
+            background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(226,232,240,0.82));
+            color: #2563eb;
+            border-color: rgba(255,255,255,0.72);
+            box-shadow: 7px 7px 16px rgba(15,23,42,0.10), -7px -7px 16px rgba(255,255,255,0.88);
+        }
+
+        #main-nav .nav-brand-text,
+        #main-nav .nav-link,
+        #mobile-btn {
+            color: #0f172a;
+        }
+
+        #main-nav .nav-link {
+            background: transparent;
+        }
+
+        #main-nav:not(.nav-scrolled):not(.nav-menu-open) .nav-link:hover {
+            background-color: rgba(37, 99, 235, 0.08);
+            color: #0f172a;
+        }
+
+        #main-nav:not(.nav-scrolled):not(.nav-menu-open) .nav-cta {
+            background: transparent;
+            color: #2563eb;
+            box-shadow: none;
+            animation: none;
+            padding-left: 0.85rem;
+            padding-right: 0.85rem;
+        }
+
+        #main-nav:not(.nav-scrolled):not(.nav-menu-open) .nav-cta:hover {
+            background: rgba(37, 99, 235, 0.08);
+            color: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        #main-nav.nav-scrolled .dynamic-island-shell,
+        #main-nav.nav-menu-open .dynamic-island-shell {
+            background: rgba(15, 23, 42, 0.96);
+            border-color: rgba(148, 163, 184, 0.18);
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-radius: 9999px;
+            transform: scale(0.94);
+            padding-top: 0.65rem;
+            padding-bottom: 0.65rem;
+        }
+
+        #main-nav.nav-scrolled .nav-brand-icon,
+        #main-nav.nav-menu-open .nav-brand-icon {
+            background: rgba(255, 255, 255, 0.10);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+
+        #main-nav.nav-scrolled .nav-brand-text,
+        #main-nav.nav-menu-open .nav-brand-text,
+        #main-nav.nav-scrolled #mobile-btn,
+        #main-nav.nav-menu-open #mobile-btn {
+            color: #ffffff;
+        }
+
+        #main-nav.nav-scrolled .nav-link,
+        #main-nav.nav-menu-open .nav-link {
+            color: #cbd5e1;
+        }
+
+        #main-nav.nav-scrolled .nav-link:hover,
+        #main-nav.nav-menu-open .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+
+        #main-nav.nav-scrolled .nav-cta,
+        #main-nav.nav-menu-open .nav-cta {
+            background: linear-gradient(90deg, #1d4ed8 0%, #3b82f6 100%);
+            color: #ffffff;
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4), 0 8px 10px -6px rgba(59, 130, 246, 0.1);
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        .material-surface,
+        .bento-card,
+        .role-item,
+        .ui-card,
+        .network-card,
+        .module-card {
+    
+            border-color: var(--surface-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .material-surface:hover,
+        .bento-card:hover,
+        .role-item:hover,
+        .ui-card:hover,
+        .network-card:hover,
+        .module-card:hover {
+            box-shadow: var(--material-shadow-hover);
+        }
+
+        .neo-icon,
+        .bento-card > .w-12.h-12,
+        .role-item .w-12.h-12,
+        .network-card .w-12.h-12,
+        #onboarding-flow .w-10.h-10,
+        .arch-feature-icon,
+        .feature-row-icon,
+        .ui-card .w-6.h-6,
+        .ui-card .w-7.h-7 {
+            background-image: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(226,232,240,0.88));
+            border: 1px solid rgba(255,255,255,0.72);
+           
+        }
+
+        .bg-brand-900 .neo-icon,
+        .bg-brand-900 > .w-12.h-12,
+        footer .footer-social-icon {
+            background-image: linear-gradient(145deg, rgba(30,41,59,0.95), rgba(15,23,42,0.95));
+            border-color: rgba(255,255,255,0.08);
+            box-shadow: 7px 7px 18px rgba(2,6,23,0.35), -6px -6px 14px rgba(255,255,255,0.05), inset 1px 1px 0 rgba(255,255,255,0.06);
+        }
+
+        .btn-material {
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.10), 0 6px 14px rgba(15, 23, 42, 0.10);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+        }
+
+        .btn-material:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(15, 23, 42, 0.12), 0 12px 24px rgba(15, 23, 42, 0.14);
+        }
+
+        .btn-gradient,
+        .cta-magnetic-glow {
+            will-change: transform;
+        }
+
+        @media (max-width: 767px) {
+            #main-nav.nav-scrolled .dynamic-island-shell,
+            #main-nav.nav-menu-open .dynamic-island-shell {
+                transform: scale(0.97);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.001ms !important;
+            }
+        }
+
+    </style>
+</head>
+<body class="text-slate-800 antialiased relative">
+
+    <nav id="main-nav" class="fixed top-4 left-0 right-0 z-50 px-3 sm:px-6 transition-all duration-300">
+        <div class="dynamic-island-shell nav-shell max-w-6xl mx-auto rounded-full px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 z-50 relative cursor-pointer min-w-0">
+                
+                <span class="nav-brand-text text-base sm:text-lg font-bold tracking-tight text-white truncate">Educore</span>
+            </div>
+            
+            <div class="hidden md:flex items-center gap-2 text-sm font-semibold text-slate-300">
+                <a href="#" class="nav-link">Features</a>
+                <a href="#" class="nav-link">Multi-Campus</a>
+                <a href="#" class="nav-link">Pricing</a>
+                <a href="#" class="nav-link">Solutions</a>
+            </div>
+            
+            <div class="hidden md:flex items-center gap-3">
+                <a href="#" class="nav-link text-slate-200">Login</a>
+                <a href="#" class="nav-cta btn-gradient text-slate-50 px-6 py-2.5 rounded-full text-sm font-bold hover:bg-slate-100 hover:scale-105 transition-all shadow-sm inline-flex items-center justify-center animate-breathe">
+                    Create free account
+                </a>
+            </div>
+
+            <button id="mobile-btn" class="md:hidden text-white text-xl z-50 relative focus:outline-none">
+                <i class="fa-solid fa-bars transition-all duration-300" id="menu-icon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div id="mobile-menu" class="fixed inset-0 z-40 flex flex-col px-6 pt-32 pb-10 md:hidden overflow-y-auto">
+        <div class="flex flex-col min-h-full">
+            <div class="flex flex-col gap-6 text-xl font-semibold text-white mb-10 flex-grow">
+                <a href="#" class="border-b border-white/10 pb-4 hover:text-brand-300 transition">Features</a>
+                <a href="#" class="border-b border-white/10 pb-4 hover:text-brand-300 transition">Multi-Campus</a>
+                <a href="#" class="border-b border-white/10 pb-4 hover:text-brand-300 transition">Pricing</a>
+                <a href="#" class="border-b border-white/10 pb-4 hover:text-brand-300 transition">Solutions</a>
+            </div>
+            <div class="flex flex-col gap-4 mt-auto">
+                <a href="#" class="w-full text-center py-4 rounded-full border border-white/15 font-bold text-white bg-white/5 active:bg-white/10 transition">Log In</a>
+                <a href="#" class="w-full text-center py-4 rounded-full bg-white text-brand-900 font-bold transition hover:bg-slate-100">Create free account</a>
+            </div>
+        </div>
+    </div>
+
+    <section id="hero-section" class="hero-stage relative pt-44 pb-0 px-6 md:px-10 lg:px-16 overflow-hidden flex flex-col items-center justify-start min-h-[100svh]">
+        
+        <div class="absolute top-[20%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-brand-400/20 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+
+        <div class="absolute top-32 left-[10%] scroll-parallax z-0 pointer-events-none" data-scroll-speed="1.5">
+            <div class="mouse-parallax" data-mouse-speed="-1.5">
+                <div class="w-6 h-6 float-shape color-blue shape-circle animate-float"></div>
+            </div>
+        </div>
+
+        <div class="absolute top-48 right-[15%] scroll-parallax z-0 pointer-events-none" data-scroll-speed="-0.8">
+            <div class="mouse-parallax" data-mouse-speed="1.2">
+                <div class="w-4 h-4 float-shape color-blue shape-circle animate-float-delayed"></div>
+            </div>
+        </div>
+
+        <div class="absolute top-[31rem] left-[30%] scroll-parallax z-0 pointer-events-none" data-scroll-speed="1.5">
+            <div class="mouse-parallax" data-mouse-speed="-1.5">
+                <div class="w-6 h-6 float-shape bg-[#ffc221] shape-triangle animate-float"></div>
+            </div>
+        </div>
+
+        <div class="absolute top-80 right-[35%] scroll-parallax z-0 pointer-events-none" data-scroll-speed="-0.8">
+            <div class="mouse-parallax" data-mouse-speed="1.2">
+                <div class="w-4 h-4 float-shape bg-[#2ab6b5] shape-circle animate-float-delayed"></div>
+            </div>
+        </div>
+
+        <div class="absolute top-[42rem] left-[10%] scroll-parallax z-0 pointer-events-none" data-scroll-speed="1.5">
+            <div class="mouse-parallax" data-mouse-speed="-1.5">
+                <div class="w-6 h-6 float-shape color-green shape-circle animate-float"></div>
+            </div>
+        </div>
+
+        <div class="absolute top-40 right-[65%] scroll-parallax z-0 pointer-events-none" data-scroll-speed="-0.8">
+            <div class="mouse-parallax" data-mouse-speed="1.2">
+                <div class="w-4 h-4 float-shape color-orange shape-circle animate-float-delayed"></div>
+            </div>
+        </div>
+        <div class="absolute top-[51rem] left-[12%] scroll-parallax z-0 pointer-events-none" data-scroll-speed="1.5">
+            <div class="mouse-parallax" data-mouse-speed="-1.5">
+                <div class="w-6 h-6 float-shape bg-[#d71c53] shape-square animate-float"></div>
+            </div>
+        </div>
+
+        <div class="absolute top-[30rem] right-[25%] scroll-parallax z-0 pointer-events-none" data-scroll-speed="-0.8">
+            <div class="mouse-parallax" data-mouse-speed="1.2">
+                <div class="w-4 h-4 float-shape bg-[#2ab6b5] shape-triangle animate-float-delayed"></div>
+            </div>
+        </div>
+        <div class="absolute top-[4rem] right-[35%] scroll-parallax z-0 pointer-events-none" data-scroll-speed="-0.8">
+            <div class="mouse-parallax" data-mouse-speed="1.2">
+                <div class="w-4 h-4 float-shape color-green shape-circle animate-float-delayed"></div>
+            </div>
+        </div>
+
+
+        <div class="max-w-4xl mx-auto text-center relative z-10 w-full flex flex-col items-center">
+
+            <div class="hero-elem opacity-0 inline-flex items-center gap-3 px-3 py-1.5 rounded-full bg-slate-100/50 backdrop-blur-md border-2 border-slate-200 shadow-sm mb-12 transition-all hover:border-brand-400 group cursor-default">
+                <div class="flex items-center justify-center relative">
+                    <i class="fa-solid fa-certificate text-[#2ab6b5] text-sm sm:text-base group-hover:rotate-12 transition-transform duration-500"></i>
+                    <i class="fa-solid fa-check absolute text-white text-[9px] mt-0.5"></i>
+                </div>
+                <span class="text-[11px] sm:text-[12px] font-black text-brand-900 uppercase tracking-[0.25em] pt-0.5">Enterprise Ready</span>
+            </div>
+            
+            <h1 class="hero-elem opacity-0 hero-title font-bold tracking-tight text-slate-900 mb-6">
+                The Operating<br class="md:hidden"/><span class="text-white">.</span><span class="bitcount-grid-double text-blue-500">System</span> for <br class="hidden md:block"/>Modern Education.
+            </h1>
+            
+            <p class="hero-elem opacity-0 text-sm md:text-base text-slate-500 mb-10 max-w-xl mx-auto leading-relaxed">
+               Launch a fully integrated management platform for your K-12 school, college, or university in minutes. Built for scale, designed for simplicity, and ready for every campus.
+            </p>
+            
+            <div class="hero-elem opacity-0 flex flex-col sm:flex-row justify-center items-center gap-4 mb-16">
+                <a href="#" class="btn-gradient text-white px-10 py-4 rounded-full font-bold transition flex items-center justify-center gap-2 animate-breathe">
+                    Launch Your Portal <i class="fa-solid fa-arrow-right text-sm"></i>
+                </a>
+                <a href="#" class="secondary-action btn-material bg-white text-slate-700 px-8 py-4 rounded-full font-semibold border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition flex items-center justify-center gap-2 shadow-sm">
+                    <i class="fa-regular fa-circle-play"></i> See How It Works
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-dashboard opacity-0 w-full max-w-6xl mx-auto relative h-[400px] sm:h-[500px] md:h-[600px] flex justify-center items-end">
+            
+            <div class="hidden md:block absolute left-0 bottom-10 w-[45%] h-[85%] rounded-3xl overflow-hidden border border-white/50 shadow-2xl z-0 -translate-x-16 opacity-80">
+                <img src="hero-dashboard.jfif" alt="Dashboard Left" class="w-full h-full object-cover object-left-top scale-105">
+                <div class="absolute inset-0 bg-gradient-to-r from-[#f8fafc] via-[#f8fafc]/40 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#f8fafc] via-transparent to-transparent"></div>
+                <div class="absolute inset-0 bg-white/20 backdrop-blur-[1px]"></div>
+            </div>
+
+            <div class="hidden md:block absolute right-0 bottom-10 w-[45%] h-[85%] rounded-3xl overflow-hidden border border-white/50 shadow-2xl z-0 translate-x-16 opacity-80">
+                <img src="hero-dashboard.jfif" alt="Dashboard Right" class="w-full h-full object-cover object-right-top scale-105">
+                <div class="absolute inset-0 bg-gradient-to-l from-[#f8fafc] via-[#f8fafc]/40 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#f8fafc] via-transparent to-transparent"></div>
+                <div class="absolute inset-0 bg-white/20 backdrop-blur-[1px]"></div>
+            </div>
+
+            <div class="relative z-20 w-[260px] sm:w-[280px] md:w-[320px] h-[90%] bg-white rounded-t-[2.5rem] md:rounded-t-[3rem] border-[8px] md:border-[12px] border-b-0 border-slate-900 shadow-[0_-20px_60px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden transform translate-y-2">
+                
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[45%] h-6 bg-slate-900 rounded-b-2xl z-30 flex justify-center items-center">
+                    <div class="w-10 h-1.5 bg-slate-800 rounded-full"></div>
+                </div>
+
+                <div class="w-full h-full bg-slate-50 relative overflow-hidden pt-10">
+                    <div class="px-5 pb-3 border-b border-slate-200 flex justify-between items-center bg-white">
+                        <div class="flex items-center gap-1.5">
+                            <div class="w-5 h-5 bg-brand-500 rounded-[4px] text-white flex justify-center items-center text-[10px] font-bold">A</div>
+                            <span class="text-[11px] font-bold text-slate-800">Educore</span>
+                        </div>
+                        <div class="w-6 h-6 rounded-full bg-slate-50 flex justify-center items-center text-slate-500 text-[10px]">
+                            <i class="fa-regular fa-bell"></i>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <p class="text-[10px] text-slate-400 font-semibold mb-1">Total Fee Balance</p>
+                        <h2 class="text-3xl font-black text-slate-800 mb-5">$1,459.70</h2>
+
+                        <div class="flex gap-2 mb-6">
+                            <button class="btn-material flex-1 bg-brand-100 text-brand-600 py-2.5 rounded-xl text-xs font-bold flex justify-center items-center gap-1.5 hover:bg-brand-200 transition">
+                                <i class="fa-solid fa-arrow-down"></i> Receive
+                            </button>
+                            <button class="btn-material flex-1 bg-brand-500 text-white py-2.5 rounded-xl text-xs font-bold flex justify-center items-center gap-1.5 hover:bg-brand-600 transition shadow-sm">
+                                <i class="fa-solid fa-arrow-up"></i> Withdraw
+                            </button>
+                        </div>
+                        
+                        <div class="w-full h-[300px] rounded-xl overflow-hidden border border-slate-200 shadow-sm relative">
+                             <img src="hero-dashboard.jfif" class="absolute inset-0 w-[200%] h-full object-cover object-left-top" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-[#f8fafc] to-transparent z-30 pointer-events-none"></div>
+        </div>
+    </section>
+    <section class="py-10 bg-white border-y border-slate-200/60 relative z-10 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 text-center mb-6">
+            <p class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Trusted by 500+ campuses worldwide</p>
+        </div>
+        <div class="w-full overflow-hidden flex hide-scroll">
+            <div class="flex animate-marquee min-w-max gap-16 md:gap-32 px-8 opacity-40 grayscale items-center">
+                <h2 class="text-xl font-bold font-serif">FutureLearn</h2>
+                <h2 class="text-xl font-bold font-serif">Academix</h2>
+                <h2 class="text-xl font-bold font-serif">EduGlobal</h2>
+                <h2 class="text-xl font-bold font-serif">OxfordPrep</h2>
+                <h2 class="text-xl font-bold font-serif">FutureLearn</h2>
+                <h2 class="text-xl font-bold font-serif">Academix</h2>
+                <h2 class="text-xl font-bold font-serif">EduGlobal</h2>
+                <h2 class="text-xl font-bold font-serif">OxfordPrep</h2>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-slate-100 py-24 px-6 md:px-10 lg:px-16 relative overflow-hidden z-10">
+        <div aria-hidden="true" class="floating-field" data-float-field="features"><span
+                class="float-shape color-blue shape-circle"
+                style="--x:6%;--y:10%;--size:10px;--float:7s;--delay:-0.0s;"></span><span
+                class="float-shape color-orange shape-squircle"
+                style="--x:14%;--y:22%;--size:14px;--float:9s;--delay:-0.7s;"></span><span
+                class="float-shape color-red shape-diamond"
+                style="--x:22%;--y:34%;--size:18px;--float:11s;--delay:-1.4s;"></span><span
+                class="float-shape color-yellow shape-triangle"
+                style="--x:82%;--y:16%;--size:12px;--float:8s;--delay:-2.1s;"></span><span
+                class="float-shape color-green shape-circle"
+                style="--x:90%;--y:40%;--size:16px;--float:10s;--delay:-2.8s;"></span><span
+                class="float-shape color-blue shape-squircle"
+                style="--x:76%;--y:74%;--size:22px;--float:12s;--delay:-3.5s;"></span></div>
+
+        <div class="max-w-7xl mx-auto bento-container relative z-10">
+            <div class="mb-16">
+                <h2 class="section-title font-semibold text-brand-900 tracking-tight mb-4">Everything your school needs.<br/>Nothing it doesn't.</h2>
+                <p class="text-slate-500 text-lg">Powerful features designed specifically for administrative efficiency.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bento-card opacity-0 col-span-1 md:col-span-2 bg-[#2AB6B5] rounded-3xl p-8 md:p-12 hover:shadow-lg hover:border-brand-200 hover:scale-[1.01] transition-all duration-300 group overflow-hidden relative">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-accent-green opacity-5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+                    <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-accent-green text-xl mb-6 group-hover:-translate-y-1 transition-transform"><i class="fa-solid fa-wallet"></i></div>
+                    <h3 class="text-2xl font-bold text-brand-900 mb-3">Smart Fee Management</h3>
+                    <p class="text-slate-500 mb-8 max-w-md">Automate invoicing, set up payment plans, and collect fees online safely. Say goodbye to manual reconciliation and long queues.</p>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 flex items-center justify-between w-full max-w-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-brand-900 text-white flex items-center justify-center text-xs"><i class="fa-brands fa-stripe-s"></i></div>
+                            <span class="text-sm font-medium">Stripe Gateway</span>
+                        </div>
+                        <span class="text-xs font-semibold text-accent-green bg-green-50 px-2 py-1 rounded">Connected</span>
+                    </div>
+                </div>
+
+                <div class="bento-card opacity-0 col-span-1 bg-[#ffc221] rounded-3xl p-8 md:p-12 hover:shadow-lg hover:border-brand-200 hover:scale-[1.01] transition-all duration-300 group">
+                    <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-accent-purple text-xl mb-6 group-hover:-translate-y-1 transition-transform"><i class="fa-solid fa-users"></i></div>
+                    <h3 class="text-2xl font-bold text-brand-900 mb-3">Parent & Student Portals</h3>
+                    <p class="text-slate-500 mb-6">Real-time access to grades, attendance, and school announcements from any device.</p>
+                    <div class="flex -space-x-3">
+                        <div class="w-10 h-10 rounded-full border-2 border-white bg-slate-200 shadow-sm"></div>
+                        <div class="w-10 h-10 rounded-full border-2 border-white bg-slate-300 shadow-sm"></div>
+                        <div class="w-10 h-10 rounded-full border-2 border-white bg-slate-400 shadow-sm"></div>
+                        <div class="w-10 h-10 rounded-full border-2 border-white bg-brand-50 flex items-center justify-center text-xs font-bold text-brand-600 shadow-sm">+</div>
+                    </div>
+                </div>
+
+                <div class="bento-card opacity-0 col-span-1 bg-[#D71C53] rounded-3xl p-8 md:p-12 hover:shadow-lg hover:border-brand-200 hover:scale-[1.01] transition-all duration-300 group">
+                    <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-brand-500 text-xl mb-6 group-hover:-translate-y-1 transition-transform"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <h3 class="text-2xl font-bold text-slate-100 mb-3">Course & Transcripts</h3>
+                    <p class="text-slate-300">Effortless course registration, automated grading rubrics, and instant transcript generation.</p>
+                </div>
+
+                <div class="bento-card opacity-0 col-span-1 md:col-span-2 bg-[#102e52] rounded-3xl p-8 md:p-12 hover:shadow-xl hover:scale-[1.01] transition-all duration-300 relative overflow-visible text-white group">
+                    <div class="absolute right-[-80px] bottom-[8px] z-20 h-[118%] w-[45%] min-w-[240px] pointer-events-none transition-transform duration-300 group-hover:-translate-y-1 max-md:right-[-38px] max-md:bottom-[6px] max-md:h-[42%] max-md:w-[66%] max-md:min-w-[150px]">
+                        <img src="bento-grid-image.png" alt="Parent and student portal app" class="w-full h-auto object-contain drop-shadow-[0_28px_40px_rgba(15,23,42,0.45)]" />
+                    </div>
+                    <div class="relative z-10 pb-4 pr-0 md:pr-[34%]">
+                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white text-xl mb-6 backdrop-blur-sm group-hover:-translate-y-1 transition-transform"><i class="fa-solid fa-id-card"></i></div>
+                        <h3 class="text-2xl font-bold mb-3">Parent & Student Portals</h3>
+                        <p class="text-slate-300 mb-8 max-w-md">Give families real-time access to grades, attendance, fee status, and school announcements from any device.</p>
+                        <a href="#" class="text-white font-medium hover:text-brand-100 flex items-center gap-2">Explore Portals <i class="fa-solid fa-arrow-right text-sm group-hover:translate-x-1 transition-transform"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 md:px-10 lg:px-16 bg-slate-50 border-y border-slate-200/60 relative overflow-hidden z-10">
+        <div aria-hidden="true" class="floating-field" data-float-field="ecosystem"><span
+                class="float-shape color-blue shape-circle"
+                style="--x:12%;--y:14%;--size:12px;--float:7s;--delay:-0.3s;"></span><span
+                class="float-shape color-green shape-squircle"
+                style="--x:24%;--y:76%;--size:16px;--float:9s;--delay:-1.0s;"></span><span
+                class="float-shape color-orange shape-diamond"
+                style="--x:82%;--y:18%;--size:15px;--float:11s;--delay:-1.8s;"></span><span
+                class="float-shape color-yellow shape-circle"
+                style="--x:90%;--y:56%;--size:18px;--float:10s;--delay:-2.5s;"></span><span
+                class="float-shape color-red shape-triangle"
+                style="--x:8%;--y:48%;--size:13px;--float:8s;--delay:-3.2s;"></span><span
+                class="float-shape color-blue shape-squircle"
+                style="--x:68%;--y:78%;--size:20px;--float:12s;--delay:-3.9s;"></span></div>
+
+        <div class="max-w-7xl mx-auto flex flex-col xl:flex-row items-center gap-16 relative z-10">
+            <div class="w-full xl:w-1/3 relative z-10 text-center xl:text-left">
+                <span class="text-brand-600 font-bold text-sm tracking-widest uppercase mb-2 block">Beyond The Basics</span>
+                <h2 class="section-title font-semibold text-brand-900 tracking-tight mb-6 ">A complete ecosystem for your campus.</h2>
+                <p class="text-slate-500 text-lg mb-8 max-w-lg mx-auto xl:mx-0">AGMEducore goes beyond academics and finance, providing dedicated modules to manage every physical and digital asset of your institution seamlessly.</p>
+                <a href="#" class="text-brand-600 font-bold hover:text-brand-800 transition flex items-center justify-center xl:justify-start gap-2">View all modules <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="w-full xl:w-2/3 relative h-[720px] sm:h-[680px] md:h-[600px] flex justify-center items-center">
+                <!-- <div class="module-card absolute top-[5%] md:top-[10%] left-[3%] md:left-[5%] w-[46%] md:w-64 bg-slate-900 rounded-3xl p-5 md:p-6 text-white shadow-2xl hover:scale-105 transition-transform duration-300 z-20 cursor-pointer border border-slate-800 mouse-parallax" data-mouse-speed="0.5">
+                    <p class="text-[10px] text-slate-400 mb-2 uppercase tracking-wider font-semibold">Module</p>
+                    <h3 class="text-base md:text-lg font-bold mb-6 md:mb-8 leading-snug">Inventory & Asset Tracking</h3>
+                    <p class="text-xs text-brand-300 font-semibold">Explore <i class="fa-solid fa-arrow-right ml-1"></i></p>
+                </div> -->
+
+                <div class="module-card absolute top-[19%] md:top-[15%] left-[22%] md:left-[35%] w-[64%] md:w-72 h-[320px] md:h-[360px] bg-[#D71C53] rounded-[2.5rem] p-6 md:p-8 text-white shadow-[0_30px_60px_rgba(37,99,235,0.3)] hover:scale-105 transition-transform duration-300 z-10 flex flex-col cursor-pointer mouse-parallax" data-mouse-speed="-0.5">
+                    <p class="text-[10px] text-brand-200 mb-2 uppercase tracking-wider font-semibold">Module</p>
+                    <h3 class="text-2xl md:text-4xl font-extrabold mb-auto leading-tight">Library & <br>Media Center</h3>
+                    <p class="text-sm font-semibold">Explore <i class="fa-solid fa-arrow-right ml-1"></i></p>
+                </div>
+
+                <div class="module-card absolute top-[57%] md:top-[54%] left-[2%] md:left-[14%] w-[50%] md:w-64 bg-[#2AB6B5] rounded-3xl p-5 md:p-6 text-brand-900 shadow-[0_20px_50px_rgba(0,0,0,0.08)] hover:scale-105 transition-transform duration-300 z-0 border border-slate-100 cursor-pointer mouse-parallax" data-mouse-speed="0.8">
+                    <p class="text-[10px] text-slate-100 mb-2 uppercase tracking-wider font-semibold">Module</p>
+                    <h3 class="text-slate-100 md:text-lg font-bold mb-6 md:mb-8 leading-snug">Events & School Calendar</h3>
+                    <p class="text-xs text-slate-100 font-bold">Explore <i class="fa-solid fa-arrow-right ml-1"></i></p>
+                </div>
+
+                <div class="module-card absolute bottom-[6%] right-[1%] md:right-[5%] w-[50%] md:w-64 h-[238px] md:h-72 bg-yellow-500 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 text-lime-950 shadow-2xl hover:scale-105 transition-transform duration-300 z-20 flex flex-col cursor-pointer border border-lime-300 mouse-parallax" data-mouse-speed="-1.2">
+                    <p class="text-[10px] text-lime-800 mb-2 uppercase tracking-wider font-semibold">Module</p>
+                    <h3 class="text-xl md:text-3xl font-extrabold mb-auto leading-tight">Alumni <br>Network</h3>
+                    <p class="text-xs font-bold">Explore <i class="fa-solid fa-arrow-right ml-1"></i></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 md:px-10 lg:px-16 relative overflow-hidden bg-white z-10">
+        <div aria-hidden="true" class="floating-field" data-float-field="roles"><span
+                class="float-shape color-yellow shape-circle"
+                style="--x:78%;--y:14%;--size:18px;--float:7s;--delay:-0.2s;"></span><span
+                class="float-shape color-blue shape-squircle"
+                style="--x:8%;--y:74%;--size:13px;--float:9s;--delay:-0.9s;"></span><span
+                class="float-shape color-red shape-diamond"
+                style="--x:18%;--y:16%;--size:15px;--float:11s;--delay:-1.6s;"></span><span
+                class="float-shape color-green shape-circle"
+                style="--x:90%;--y:58%;--size:17px;--float:10s;--delay:-2.3s;"></span><span
+                class="float-shape color-orange shape-triangle"
+                style="--x:62%;--y:80%;--size:14px;--float:8s;--delay:-3.0s;"></span></div>
+
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 md:gap-24 relative z-10">
+            <div class="w-full md:w-[46%] relative z-10">
+                <span class="text-brand-600 font-bold text-sm tracking-widest uppercase mb-2 block">Built For Everyone</span>
+                <h2 class="section-title font-semibold text-brand-900 tracking-tight mb-6 ">One system. Tailored for every role.</h2>
+                <p class="text-slate-500 text-lg mb-8">Click or hover over a role below to see how their experience adapts across devices.</p>
+                
+                <div class="space-y-4">
+                    <div class="role-item role-glow p-4 rounded-xl border border-transparent hover:border-slate-200 hover:bg-white cursor-pointer transition-all duration-300 flex items-center gap-4 bg-white/70 backdrop-blur-sm" data-target="ui-admin">
+                        <div class="w-12 h-12 rounded-full bg-white  flex items-center justify-center text-brand-600"><i class="fa-solid fa-chart-pie"></i></div>
+                        <div><h4 class="font-bold text-brand-900">Administrators</h4><p class="text-sm text-slate-500">Global reporting and oversight.</p></div>
+                    </div>
+                    <div class="role-item role-glow p-4 rounded-xl border border-transparent hover:border-slate-200 hover:bg-white cursor-pointer transition-all duration-300 flex items-center gap-4 bg-white/70 backdrop-blur-sm" data-target="ui-finance">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center text-accent-green"><i class="fa-solid fa-calculator"></i></div>
+                        <div><h4 class="font-bold text-brand-900">Bursars & Finance</h4><p class="text-sm text-slate-500">Automated ledgers and payment tracking.</p></div>
+                    </div>
+                    <div class="role-item role-glow p-4 rounded-xl border border-transparent hover:border-slate-200 hover:bg-white cursor-pointer transition-all duration-300 flex items-center gap-4 bg-white/70 backdrop-blur-sm" data-target="ui-teacher">
+                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-accent-purple"><i class="fa-solid fa-chalkboard-user"></i></div>
+                        <div><h4 class="font-bold text-brand-900">Teachers & Faculty</h4><p class="text-sm text-slate-500">Grading, attendance, and lesson planning.</p></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="w-full md:w-[54%] relative h-[540px] md:h-[560px] flex items-center justify-center">
+                
+                <div class="absolute inset-0 scroll-parallax z-0 flex items-center justify-center" data-scroll-speed="-0.5">
+                    <div class="bg-slate-950 w-[240px] h-[500px] md:w-[256px] md:h-[530px] rounded-[2.75rem] border-[10px] border-slate-900 shadow-[0_30px_80px_rgba(15,23,42,0.35)] overflow-hidden relative mouse-parallax" data-mouse-speed="0.5">
+                        
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-slate-900 rounded-b-xl z-20"></div> 
+                        
+                        <div class="phone-screen bg-white w-full h-full rounded-[2.1rem] overflow-hidden relative">
+                            <img src="reports-dashboard-img.png" alt="Administrator reports dashboard" class="role-screen is-active" data-role="ui-admin">
+                            <img src="finance-dashboard-img.png" alt="Bursar finance dashboard" class="role-screen" data-role="ui-finance" loading="lazy">
+                            <img src="student-portal-img.png" alt="Student portal" class="role-screen" data-role="ui-teacher" loading="lazy">
+                        </div> 
+                    </div> 
+                </div> 
+
+                <div id="ui-admin" class="ui-card role-glow absolute top-[10%] right-[10%] w-[168px] min-h-[112px] bg-yellow-500 p-3 rounded-xl shadow-lg border border-slate-100 transition-all duration-500 z-10 mouse-parallax" data-mouse-speed="-1.5">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-6 h-6 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center"><i class="fa-solid fa-user-tie text-[9px]"></i></div>
+                        <div><p class="text-[9px] font-bold text-brand-900">Admin Approval</p></div>
+                    </div>
+                    <div class="w-full h-1.5 bg-slate-100 rounded-full mb-1.5"><div class="w-3/4 h-full bg-slate-900 rounded-full"></div></div>
+                    <p class="text-[8px] text-slate-400 text-right">75% capacity</p>
+                </div>
+
+                <div id="ui-finance" class="ui-card role-glow absolute top-[42%] left-[2%] w-[168px] min-h-[112px] bg-cyan-500 p-3 rounded-xl shadow-lg border border-slate-100 transition-all duration-500 z-20 mouse-parallax" data-mouse-speed="2">
+                    <div class="flex justify-between items-center mb-3">
+                        <p class="text-[9px] font-bold text-slate-100">Recent Payment</p>
+                        <span class="bg-green-100 text-accent-green text-[8px] font-bold px-1.5 py-0.5 rounded">Cleared</span>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-100 mb-1">$3,500.00</h3>
+                    <p class="text-[8px] text-slate-400 flex items-center gap-0.5"><i class="fa-brands fa-cc-visa text-brand-600"></i> •••• 4242</p>
+                </div>
+
+                <div id="ui-teacher" class="ui-card role-glow absolute bottom-[15%] right-[2%] w-[168px] min-h-[112px] bg-white p-3 rounded-xl shadow-lg border border-slate-100 transition-all duration-500 z-30 mouse-parallax" data-mouse-speed="2.5">
+                    <div class="flex gap-2 items-center">
+                        <div class="w-7 h-7 rounded-full bg-purple-100 text-accent-purple overflow-hidden flex items-center justify-center"><i class="fa-solid fa-book text-xs"></i></div>
+                        <div>
+                            <p class="text-[9px] font-bold text-brand-900">Math 101</p>
+                            <p class="text-[8px] text-slate-500">Grade updated: A-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="min-h-[calc(100svh-5rem)] py-24 px-6 md:px-10 lg:px-16 bg-white relative overflow-hidden z-10 border-t border-slate-200/60">
+        <div aria-hidden="true" class="floating-field" data-float-field="networks"><span
+                class="float-shape color-red shape-circle"
+                style="--x:10%;--y:18%;--size:12px;--float:7s;--delay:-0.1s;"></span><span
+                class="float-shape color-blue shape-squircle"
+                style="--x:84%;--y:28%;--size:16px;--float:9s;--delay:-0.8s;"></span><span
+                class="float-shape color-green shape-circle"
+                style="--x:18%;--y:72%;--size:14px;--float:11s;--delay:-1.5s;"></span><span
+                class="float-shape color-orange shape-diamond"
+                style="--x:92%;--y:68%;--size:15px;--float:8s;--delay:-2.2s;"></span><span
+                class="float-shape color-yellow shape-triangle"
+                style="--x:46%;--y:12%;--size:13px;--float:10s;--delay:-2.9s;"></span></div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-16 max-w-3xl mx-auto">
+                <h2 class="section-title font-semibold text-brand-900 tracking-tight mb-4">Built for Multi-Campus Institutions and School Networks</h2>
+                <p class="text-slate-500 text-lg">Whether you manage 5 campuses or 500, AGMEducore provides the infrastructure to standardize excellence.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="network-card bg-white rounded-2xl p-8 border border-orange-100/60 hover:border-orange-200 hover:shadow-lg transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 mb-6">
+                        <i class="fa-solid fa-building-columns text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-900 mb-3">University Systems</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Unified governance for colleges with shared resources but independent operations.</p>
+                </div>
+
+                <div class="network-card bg-white rounded-2xl p-8 border border-emerald-100/60 hover:border-emerald-200 hover:shadow-lg transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 mb-6">
+                        <i class="fa-solid fa-clipboard-check text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-900 mb-3">K-12 School Networks</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Standardize curriculum delivery and admissions across city or state-wide chains.</p>
+                </div>
+
+                <div class="network-card bg-white rounded-2xl p-8 border border-purple-100/60 hover:border-purple-200 hover:shadow-lg transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-500 mb-6">
+                        <i class="fa-solid fa-microchip text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-900 mb-3">Vocational Groups</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Manage specialized training centers with centralized certification and finance.</p>
+                </div>
+            </div>
+
+            <div class="bg-[#102e52] rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6 shadow-xl">
+                <div class="flex items-center gap-4 text-white flex-1">
+                    <i class="fa-solid fa-arrow-right-arrow-left text-xl text-brand-400 w-6 shrink-0 text-center"></i>
+                    <div>
+                        <h4 class="font-bold">100% Standardization</h4>
+                        <p class="text-xs text-brand-200">Consistent processes everywhere</p>
+                    </div>
+                </div>
+                <div class="hidden md:block w-px h-12 bg-white/10"></div>
+                <div class="flex items-center gap-4 text-white flex-1">
+                    <i class="fa-regular fa-eye text-xl text-brand-400 w-6 shrink-0 text-center"></i>
+                    <div>
+                        <h4 class="font-bold">Real-time Oversight</h4>
+                        <p class="text-xs text-brand-200">Data from all nodes instantly</p>
+                    </div>
+                </div>
+                <div class="hidden md:block w-px h-12 bg-white/10"></div>
+                <div class="flex items-center gap-4 text-white flex-1">
+                    <i class="fa-solid fa-rocket text-xl text-brand-400 w-6 shrink-0 text-center"></i>
+                    <div>
+                        <h4 class="font-bold">2x Deployment Speed</h4>
+                        <p class="text-xs text-brand-200">Roll out changes centrally</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="min-h-[calc(100svh-5rem)] py-24 md:py-0 px-6 md:px-10 lg:px-16 bg-white border-y border-slate-200/60 relative overflow-hidden z-10 arch-section flex items-center">
+        <div aria-hidden="true" class="floating-field" data-float-field="architecture">
+            <span class="float-shape color-blue shape-circle" style="--x:6%;--y:10%;--size:10px;--float:7s;--delay:-0.0s;"></span>
+            <span class="float-shape color-orange shape-squircle" style="--x:14%;--y:22%;--size:14px;--float:9s;--delay:-0.7s;"></span>
+            <span class="float-shape color-yellow shape-triangle" style="--x:82%;--y:16%;--size:12px;--float:8s;--delay:-2.1s;"></span>
+            <span class="float-shape color-green shape-circle" style="--x:90%;--y:40%;--size:16px;--float:10s;--delay:-2.8s;"></span>
+        </div>
+
+        <div class="max-w-7xl mx-auto w-full flex flex-col lg:flex-row items-center gap-16 relative z-10">
+            <div class="w-full lg:w-1/2">
+                <div class="inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-600 mb-6 border border-brand-100 uppercase tracking-wider">
+                    Architecture
+                </div>
+                <h2 class="section-title font-semibold text-brand-900 tracking-tight mb-6">
+                    True Multi-Tenant Design Each School Isolated, Yet Standardized
+                </h2>
+                <p class="text-slate-500 text-lg mb-8 leading-relaxed">
+                    Our platform isn't just a database with a "school_id" column. It's a true multi-tenant architecture that ensures strict data isolation while allowing global configuration.
+                </p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="flex items-start gap-3">
+                        <div class="arch-feature-icon mt-1 w-6 h-6 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 text-[10px] border border-brand-100">
+                            <i class="fa-solid fa-database"></i>
+                        </div>
+                        <div>
+                            <strong class="block text-brand-900 text-sm">Strict Data Isolation</strong>
+                            <span class="text-slate-500 text-xs">Data never leaks between campuses.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="arch-feature-icon mt-1 w-6 h-6 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 text-[10px] border border-brand-100">
+                            <i class="fa-solid fa-sliders"></i>
+                        </div>
+                        <div>
+                            <strong class="block text-brand-900 text-sm">Global Configuration</strong>
+                            <span class="text-slate-500 text-xs">Push settings to one or all tenants.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="w-full lg:w-1/2 relative min-h-[420px] sm:min-h-[460px] lg:min-h-[520px] flex items-center justify-center">
+                <div class="absolute top-10 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full  pointer-events-none"></div>
+                <div class="absolute bottom-10 right-10 h-40 w-40 rounded-full pointer-events-none"></div>
+
+                <div class="flex w-full max-w-[32rem] flex-col items-center">
+                    <div class="w-48 bg-slate-900 text-white p-4 rounded-xl text-center font-bold z-20 shadow-[0_20px_50px_rgba(15,23,42,0.18)] relative">
+                        <span class="text-[10px] uppercase tracking-widest block opacity-70 mb-1">Head Office</span>
+                        <span class="text-xs">Central Platform</span>
+                        <div class="absolute inset-0 rounded-xl bg-brand-500/20 animate-ping pointer-events-none"></div>
+                    </div>
+
+                    <div class="relative w-full h-20 my-2 z-10 pointer-events-none">
+                        <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 100">
+                            <path d="M200,0 L200,50 M66,50 L333,50 M66,50 L66,100 M200,50 L200,100 M333,50 L333,100" 
+                                class="stroke-slate-500/80" stroke-width="2" fill="none" />
+                            <path d="M200,0 L200,50 L66,50 L66,100" class="moving-shape stroke-[#d71c53]" stroke-width="6" stroke-linecap="butt" fill="none" />
+                            <path d="M200,0 L200,100" class="moving-shape stroke-[#29b6b5]" stroke-width="6" stroke-linecap="round" fill="none" style="animation-delay: 0.7s;" />
+                            <path d="M200,0 L200,50 L333,50 L333,100" class="moving-shape stroke-[#ffc221]" stroke-width="6" stroke-linecap="butt" fill="none" style="animation-delay: 1.4s;" />
+                        </svg>
+                    </div>
+
+                    <div class="flex justify-between w-full mt-2 gap-4">
+                        <div class="flex-1 bg-[#d71c53]/20 backdrop-blur-sm border border-brand-200/80 p-4 rounded-xl text-center group shadow-[0_18px_40px_rgba(37,99,235,0.08)] hover:bg-white transition-colors">
+                            <span class="block text-[9px] font-black text-brand-600 uppercase tracking-widest mb-2">Tenant A</span>
+                            <i class="fa-solid fa-school text-[#d71c53] text-lg"></i>
+                        </div>
+                        <div class="flex-1 bg-[#29b6b5]/20 backdrop-blur-sm border border-brand-200/80 p-4 rounded-xl text-center group shadow-[0_18px_40px_rgba(37,99,235,0.08)] hover:bg-white transition-colors">
+                            <span class="block text-[9px] font-black text-brand-600 uppercase tracking-widest mb-2">Tenant B</span>
+                            <i class="fa-solid fa-school text-[#29b6b5] text-lg"></i>
+                        </div>
+                        <div class="flex-1 bg-[#ffc221]/20 backdrop-blur-sm border border-brand-200/80 p-4 rounded-xl text-center group shadow-[0_18px_40px_rgba(37,99,235,0.08)] hover:bg-white transition-colors">
+                            <span class="block text-[9px] font-black text-brand-600 uppercase tracking-widest mb-2">Tenant C</span>
+                            <i class="fa-solid fa-school text-[#ffc221] text-lg"></i>
+                        </div>
+                    </div>
+
+                    <!-- <div class="flex justify-between w-full mt-6 gap-4 opacity-50">
+                        <div class="flex-1 text-center text-[10px] font-bold text-slate-500">
+                            <i class="fa-solid fa-users mb-1 block"></i>
+                            <p>Users & Data</p>
+                        </div>
+                        <div class="flex-1 text-center text-[10px] font-bold text-slate-500">
+                            <i class="fa-solid fa-users mb-1 block"></i>
+                            <p>Users & Data</p>
+                        </div>
+                        <div class="flex-1 text-center text-[10px] font-bold text-slate-500">
+                            <i class="fa-solid fa-users mb-1 block"></i>
+                            <p>Users & Data</p>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-44 px-6 md:px-10 lg:px-16 bg-white relative overflow-hidden z-10 border-t border-slate-200/60">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        
+        <div class="reveal-item">
+            <h2 class="section-title font-bold text-brand-900 tracking-tight mb-6">
+                Modern Collections With <br>Real-World Verification Built In
+            </h2>
+            <p class="text-slate-500 text-lg mb-10 max-w-lg">
+                Stop revenue leakage. Reconcile online and offline payments across every campus automatically.
+            </p>
+            
+            <div class="space-y-8">
+                <div class="flex gap-5">
+                    <div class="feature-row-icon flex-shrink-0 w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm border border-emerald-100">
+                        <i class="fa-solid fa-money-bill-transfer text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg text-brand-900">Omnichannel Collections</h4>
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            Accept credit cards, bank transfers, or cash at the counter. Everything syncs to one ledger.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-5">
+                    <div class="feature-row-icon flex-shrink-0 w-12 h-12 rounded-2xl bg-blue-50 text-brand-600 flex items-center justify-center shadow-sm border border-blue-100">
+                        <i class="fa-solid fa-chart-line text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg text-brand-900">Centralized Reconciliation</h4>
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            HQ sees daily collection reports. Spot discrepancies instantly with auto-generated flags.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reveal-item relative">
+            <div class="flex justify-between items-center mb-8">
+                <div class="flex items-center gap-3">
+                    <h4 class="font-bold text-brand-900">Revenue Overview</h4>
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                </div>
+                <span class="text-[10px] bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md text-slate-500 font-bold tracking-widest uppercase">Live Feed</span>
+            </div>
+            
+            <div class="flex items-end justify-between h-56 gap-3 sm:gap-4">
+                <div class="w-full bg-brand-500/20 rounded-t-xl relative group bar-anim" style="--h-start: 40%; --h-end: 45%; --dur: 3s;">
+                    <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">Campus A</div>
+                </div>
+                <div class="w-full bg-brand-500/40 rounded-t-xl relative group bar-anim" style="--h-start: 60%; --h-end: 55%; --dur: 2.2s;">
+                    <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">Campus B</div>
+                </div>
+                <div class="w-full bg-brand-600 rounded-t-xl relative group bar-anim shadow-[0_0_30px_rgba(37,99,235,0.2)]" style="--h-start: 85%; --h-end: 92%; --dur: 4s;">
+                    <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">Campus C</div>
+                </div>
+                <div class="w-full bg-brand-500/30 rounded-t-xl relative group bar-anim" style="--h-start: 55%; --h-end: 65%; --dur: 2.8s;">
+                    <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">Campus D</div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-between text-[11px] font-bold text-slate-400 border-t border-slate-100 pt-4">
+                <span>09:00 AM</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[6px] text-emerald-500"></i> Current Statistics</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <section class="py-24 px-6 md:px-10 lg:px-16 bg-slate-50 relative overflow-hidden z-10">
+        <div aria-hidden="true" class="floating-field" data-float-field="onboarding"><span
+                class="float-shape color-blue shape-circle"
+                style="--x:38%;--y:10%;--size:12px;--float:7s;--delay:-0.2s;"></span><span
+                class="float-shape color-orange shape-diamond"
+                style="--x:12%;--y:64%;--size:15px;--float:9s;--delay:-0.9s;"></span><span
+                class="float-shape color-yellow shape-circle"
+                style="--x:82%;--y:26%;--size:17px;--float:10s;--delay:-1.6s;"></span><span
+                class="float-shape color-green shape-squircle"
+                style="--x:68%;--y:76%;--size:18px;--float:11s;--delay:-2.3s;"></span></div>
+ 
+        <div class="max-w-7xl mx-auto text-center relative z-10">
+            <div class="mb-16 max-w-3xl mx-auto">
+                <span class="text-brand-600 font-bold text-sm tracking-widest uppercase mb-2 block">Effortless Onboarding</span>
+                <h2 class="section-title font-bold text-brand-900 tracking-tight mb-4">We handle the technical work.</h2>
+                <p class="text-slate-500 text-lg">You don't have to contact a developer. AGMEducore handles all technical setup. Just follow four simple steps.</p>
+            </div>
+
+            <div id="onboarding-flow" class="relative max-w-6xl mx-auto mt-16 md:pb-10">
+                
+                <svg id="onboarding-svg-container" class="absolute inset-0 w-full h-full z-0 pointer-events-none overflow-visible">
+                    <path id="onboarding-path" fill="none" stroke="#cbd5e1" stroke-width="4" stroke-dasharray="8 8" stroke-linecap="round"/>
+                    <path id="onboarding-draw-path" fill="none" stroke="#3b82f6" stroke-width="6" stroke-linecap="round" pathLength="1000" style="stroke-dasharray: 1000 2000; stroke-dashoffset: 1000;"/>
+                </svg>
+
+                <div class="flex flex-col md:flex-row justify-between items-center gap-12 md:gap-4 relative z-10 px-4 md:px-0">
+                    
+                    <div class="onboarding-card w-full md:flex-1 flex flex-row md:flex-col items-center gap-6 md:gap-4 group">
+                        <div class="step-circle w-14 h-14 md:w-16 md:h-16 shrink-0 rounded-full bg-white border-4 border-slate-100 text-brand-600 flex items-center justify-center text-xl shadow-md z-10 ml-4 md:ml-0">1</div>
+                        <div class="flex-1 md:text-center text-left">
+                            <div class="w-10 h-10 md:mx-auto bg-brand-50 rounded-xl flex items-center justify-center text-brand-500 mb-3"><i class="fa-solid fa-file-pen"></i></div>
+                            <h4 class="font-bold text-brand-900 mb-2">Register</h4>
+                            <p class="text-sm text-slate-500">Fill out our simple form with your basic details.</p>
+                        </div>
+                    </div>
+
+                    <div class="onboarding-card w-full md:flex-1 flex flex-row-reverse md:flex-col items-center gap-6 md:gap-4 group text-right md:text-center">
+                        <div class="step-circle w-14 h-14 md:w-16 md:h-16 shrink-0 rounded-full bg-white border-4 border-slate-100 text-emerald-500 flex items-center justify-center text-xl shadow-md z-10 mr-4 md:mr-0">2</div>
+                        <div class="flex-1">
+                            <div class="w-10 h-10 ml-auto md:mx-auto bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-500 mb-3"><i class="fa-solid fa-shield-halved"></i></div>
+                            <h4 class="font-bold text-brand-900 mb-2">Submit KYB</h4>
+                            <p class="text-sm text-slate-500">Provide required business documents for verification.</p>
+                        </div>
+                    </div>
+
+                    <div class="onboarding-card w-full md:flex-1 flex flex-row md:flex-col items-center gap-6 md:gap-4 group">
+                        <div class="step-circle w-14 h-14 md:w-16 md:h-16 shrink-0 rounded-full bg-white border-4 border-slate-100 text-purple-500 flex items-center justify-center text-xl shadow-md z-10 ml-4 md:ml-0">3</div>
+                        <div class="flex-1 md:text-center text-left">
+                            <div class="w-10 h-10 md:mx-auto bg-purple-50 rounded-xl flex items-center justify-center text-purple-500 mb-3"><i class="fa-solid fa-list-check"></i></div>
+                            <h4 class="font-bold text-brand-900 mb-2">Requirements</h4>
+                            <p class="text-sm text-slate-500">Detail your exact management and curriculum needs.</p>
+                        </div>
+                    </div>
+
+                    <div class="onboarding-card w-full md:flex-1 flex flex-row-reverse md:flex-col items-center gap-6 md:gap-4 group text-right md:text-center">
+                        <div class="step-circle w-14 h-14 md:w-16 md:h-16 shrink-0 rounded-full bg-white border-4 border-slate-100 text-orange-500 flex items-center justify-center text-xl shadow-md z-10 mr-4 md:mr-0">4</div>
+                        <div class="flex-1">
+                            <div class="w-10 h-10 ml-auto md:mx-auto bg-orange-50 rounded-xl flex items-center justify-center text-orange-500 mb-3"><i class="fa-solid fa-users-gear"></i></div>
+                            <h4 class="font-bold text-brand-900 mb-2">Provide Staff</h4>
+                            <p class="text-sm text-slate-500">List your faculty roles. We configure the entire system.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="min-h-screen flex flex-col justify-center px-6 md:px-10 lg:px-16 relative overflow-hidden z-10 bg-transparent cta-section">
+        <div aria-hidden="true" class="floating-field" data-float-field="cta"><span
+                class="float-shape color-yellow shape-circle"
+                style="--x:14%;--y:14%;--size:18px;--float:7s;--delay:-0.1s;"></span><span
+                class="float-shape color-blue shape-circle"
+                style="--x:76%;--y:30%;--size:14px;--float:9s;--delay:-0.8s;"></span><span
+                class="float-shape color-red shape-diamond"
+                style="--x:24%;--y:72%;--size:16px;--float:11s;--delay:-1.5s;"></span><span
+                class="float-shape color-green shape-squircle"
+                style="--x:88%;--y:70%;--size:20px;--float:10s;--delay:-2.2s;"></span><span
+                class="float-shape color-orange shape-triangle"
+                style="--x:54%;--y:16%;--size:14px;--float:8s;--delay:-2.9s;"></span></div>
+
+        <div class="max-w-4xl mx-auto text-center w-full cta-content relative z-10">
+            <h2 class="section-title-lg font-extrabold mb-6 text-brand-900 tracking-tight">Ready to upgrade <br/> your institution?</h2>
+            <p class="text-slate-600 text-lg md:text-xl mb-12 max-w-2xl mx-auto">Join hundreds of schools saving time, increasing revenue collection, and keeping parents happy.</p>
+            <a href="#" class="btn-gradient text-white px-14 py-6 rounded-full font-bold transition-all duration-300 inline-flex items-center justify-center animate-breathe text-xl cta-magnetic-glow">
+                Create Your Portal
+            </a>
+        </div>
+    </section>
+
+    <footer class="bg-[#102e52] pt-20 pb-10 px-6 md:px-10 lg:px-16 text-slate-300 relative z-10">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-10 mb-16 border-b border-white/10 pb-16">
+            <div class="col-span-1 lg:col-span-2">
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-brand-900 font-bold shadow-md">A</div>
+                    <span class="text-2xl font-bold tracking-tight text-white">Educore</span>
+                </div>
+                <p class="text-sm text-slate-400 max-w-sm leading-relaxed mb-6">The operating system for modern institutions. Streamline admissions, automate fee collection, and connect parents and students on one platform.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="footer-social-icon w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:text-brand-900 transition"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" class="footer-social-icon w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:text-brand-900 transition"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" class="footer-social-icon w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:text-brand-900 transition"><i class="fa-brands fa-facebook-f"></i></a>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="text-white font-bold mb-6 tracking-wide">Product</h4>
+                <ul class="space-y-4 text-sm">
+                    <li><a href="#" class="hover:text-white transition">Smart Fee Management</a></li>
+                    <li><a href="#" class="hover:text-white transition">Admissions Pipeline</a></li>
+                    <li><a href="#" class="hover:text-white transition">Parent Portals</a></li>
+                    <li><a href="#" class="hover:text-white transition">Course Registration</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="text-white font-bold mb-6 tracking-wide">Solutions</h4>
+                <ul class="space-y-4 text-sm">
+                    <li><a href="#" class="hover:text-white transition">For Universities</a></li>
+                    <li><a href="#" class="hover:text-white transition">For K-12 Networks</a></li>
+                    <li><a href="#" class="hover:text-white transition">Multi-Campus Groups</a></li>
+                    <li><a href="#" class="hover:text-white transition">Vocational Schools</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold mb-6 tracking-wide">Company</h4>
+                <ul class="space-y-4 text-sm">
+                    <li><a href="#" class="hover:text-white transition">About Us</a></li>
+                    <li><a href="#" class="hover:text-white transition">Contact Sales</a></li>
+                    <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-s text-slate-100">
+            <p>&copy; 2026 Educore. powered by <span class="font-extrabold">AGM Tech Pluse</span></p>
+            <p>Designed for scalable education networks.</p>
+        </div>
+    </footer>
+
+    <script>
+        (() => {
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const hasGSAP = typeof window.gsap !== 'undefined';
+            const hasScrollTrigger = hasGSAP && typeof window.ScrollTrigger !== 'undefined';
+
+            if (hasScrollTrigger) {
+                gsap.registerPlugin(ScrollTrigger);
+            }
+
+            const revealWithoutAnimation = () => {
+                document.querySelectorAll('.hero-elem, .hero-dashboard, .bento-card').forEach((el) => {
+                    el.classList.remove('opacity-0');
+                    el.style.opacity = '1';
+                    el.style.transform = 'none';
+                });
+            };
+
+            // Mobile menu toggle with accessible state and safe scroll locking.
+            const btn = document.getElementById('mobile-btn');
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            const nav = document.getElementById('main-nav');
+            const heroSection = document.getElementById('hero-section');
+
+            const setMenuState = (isOpen) => {
+                if (!btn || !menu || !icon) return;
+
+                menu.classList.toggle('open', isOpen);
+                document.body.classList.toggle('mobile-menu-open', isOpen);
+                nav?.classList.toggle('nav-menu-open', isOpen);
+                btn.setAttribute('aria-expanded', String(isOpen));
+                btn.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+
+                icon.classList.toggle('fa-bars', !isOpen);
+                icon.classList.toggle('fa-xmark', isOpen);
+            };
+
+            if (btn && menu && icon) {
+                btn.setAttribute('aria-controls', 'mobile-menu');
+                btn.setAttribute('aria-expanded', 'false');
+                btn.setAttribute('aria-label', 'Open menu');
+
+                btn.addEventListener('click', () => {
+                    setMenuState(!menu.classList.contains('open'));
+                });
+
+                menu.addEventListener('click', (event) => {
+                    if (event.target.closest('a')) {
+                        setMenuState(false);
+                    }
+                });
+
+                document.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape' && menu.classList.contains('open')) {
+                        setMenuState(false);
+                    }
+                });
+            }
+
+            // Smart nav: transparent on the hero, compact island only after the hero.
+            let navTicking = false;
+
+            const syncNavState = () => {
+                if (!nav || !heroSection) return;
+
+                const heroBottom = heroSection.getBoundingClientRect().bottom;
+                const navHeight = nav.getBoundingClientRect().height || 72;
+                const shrinkThreshold = Math.max(64, navHeight + 12);
+                const shouldShrink = heroBottom <= shrinkThreshold;
+
+                nav.classList.toggle('nav-scrolled', shouldShrink);
+                nav.classList.toggle('nav-at-hero', !shouldShrink);
+                navTicking = false;
+            };
+
+            const requestNavSync = () => {
+                if (navTicking) return;
+                navTicking = true;
+                requestAnimationFrame(syncNavState);
+            };
+
+            syncNavState();
+            window.addEventListener('scroll', requestNavSync, { passive: true });
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768 && menu?.classList.contains('open')) {
+                    setMenuState(false);
+                }
+                requestNavSync();
+            }, { passive: true });
+
+            if (!hasGSAP || prefersReducedMotion) {
+                revealWithoutAnimation();
+            }
+
+            // Scroll and mouse parallax are decorative, so they are skipped for reduced motion.
+            const floatingFieldShapes = Array.from(document.querySelectorAll('.floating-field .float-shape'));
+            const mouseParallaxItems = Array.from(document.querySelectorAll('.mouse-parallax'));
+
+            if (hasScrollTrigger && !prefersReducedMotion) {
+                gsap.utils.toArray('.scroll-parallax').forEach((container) => {
+                    const speed = parseFloat(container.getAttribute('data-scroll-speed')) || 1;
+
+                    gsap.to(container, {
+                        y: () => -150 * speed,
+                        ease: 'none',
+                        scrollTrigger: {
+                            trigger: container.parentElement,
+                            start: 'top bottom',
+                            end: 'bottom top',
+                            scrub: true
+                        }
+                    });
+                });
+
+                floatingFieldShapes.forEach((shape, index) => {
+                    const section = shape.closest('section');
+                    const scrollSpeed = parseFloat(shape.style.getPropertyValue('--scroll-speed')) || (0.35 + (index % 5) * 0.12);
+
+                    gsap.to(shape, {
+                        '--scroll-offset': `${-140 * scrollSpeed}px`,
+                        ease: 'none',
+                        scrollTrigger: {
+                            trigger: section || shape.parentElement,
+                            start: 'top bottom',
+                            end: 'bottom top',
+                            scrub: true
+                        }
+                    });
+                });
+            }
+
+            if (hasGSAP && !prefersReducedMotion) {
+                const parallaxControllers = mouseParallaxItems.map((item) => ({
+                    item,
+                    speed: parseFloat(item.getAttribute('data-mouse-speed')) || 1,
+                    xTo: gsap.quickTo(item, 'x', { duration: 1.4, ease: 'power2.out' }),
+                    yTo: gsap.quickTo(item, 'y', { duration: 1.4, ease: 'power2.out' })
+                }));
+
+                let latestMouseX = 0;
+                let latestMouseY = 0;
+                let mouseTicking = false;
+
+                const resetMouseParallax = () => {
+                    parallaxControllers.forEach(({ xTo, yTo }) => {
+                        xTo(0);
+                        yTo(0);
+                    });
+
+                    floatingFieldShapes.forEach((shape) => {
+                        shape.style.setProperty('--parallax-x', '0px');
+                        shape.style.setProperty('--parallax-y', '0px');
+                    });
+                };
+
+                const updateMouseParallax = () => {
+                    mouseTicking = false;
+
+                    if (window.innerWidth < 768) {
+                        resetMouseParallax();
+                        return;
+                    }
+
+                    const x = (latestMouseX / window.innerWidth - 0.5) * 2;
+                    const y = (latestMouseY / window.innerHeight - 0.5) * 2;
+
+                    parallaxControllers.forEach(({ speed, xTo, yTo }) => {
+                        xTo(x * speed * 30);
+                        yTo(y * speed * 30);
+                    });
+
+                    floatingFieldShapes.forEach((shape, index) => {
+                        const speed = parseFloat(shape.style.getPropertyValue('--mouse-speed')) || (0.35 + (index % 4) * 0.18);
+                        const directionX = index % 2 === 0 ? 1 : -1;
+                        const directionY = index % 3 === 0 ? -1 : 1;
+
+                        shape.style.setProperty('--parallax-x', `${x * speed * 18 * directionX}px`);
+                        shape.style.setProperty('--parallax-y', `${y * speed * 14 * directionY}px`);
+                    });
+                };
+
+                document.addEventListener('mousemove', (event) => {
+                    latestMouseX = event.clientX;
+                    latestMouseY = event.clientY;
+
+                    if (mouseTicking) return;
+                    mouseTicking = true;
+                    requestAnimationFrame(updateMouseParallax);
+                }, { passive: true });
+
+                window.addEventListener('resize', () => {
+                    if (window.innerWidth < 768) {
+                        resetMouseParallax();
+                    }
+                }, { passive: true });
+            }
+
+            // Hero load sequence. Set initial transforms before creating tweens to avoid flashes.
+            if (hasGSAP && !prefersReducedMotion) {
+                gsap.set('.hero-elem', { y: 28, opacity: 0 });
+                gsap.set('.hero-dashboard', { rotationX: -15, y: 50, opacity: 0, transformOrigin: 'bottom center' });
+                gsap.set('.bento-card', { y: 50, opacity: 0 });
+
+                window.addEventListener('load', () => {
+                    const tl = gsap.timeline();
+
+                    tl.to('.hero-elem', {
+                        y: 0,
+                        opacity: 1,
+                        duration: 1,
+                        stagger: 0.15,
+                        ease: 'power3.out'
+                    })
+                    .to('.hero-dashboard', {
+                        rotationX: 0,
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.2,
+                        ease: 'power3.out'
+                    }, '-=0.5');
+                });
+
+                gsap.to('.bento-card', {
+                    scrollTrigger: { trigger: '.bento-container', start: 'top 80%' },
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    stagger: 0.15,
+                    ease: 'power2.out'
+                });
+
+                gsap.to('.cta-content', {
+                    scrollTrigger: { trigger: '.cta-section', start: 'top bottom', end: 'bottom top', scrub: true },
+                    y: -50,
+                    ease: 'none'
+                });
+            }
+
+            // Roles interaction with mouse, touch/click, keyboard focus, and a visibility-safe auto-cycle.
+            const roleItems = Array.from(document.querySelectorAll('.role-item'));
+            const uiCards = Array.from(document.querySelectorAll('.ui-card'));
+            const roleScreens = Array.from(document.querySelectorAll('.role-screen'));
+
+            if (roleItems.length) {
+                let activeIndex = 0;
+                let hoveredIndex = null;
+                let cycleTimer = null;
+                const cycleDelayMs = 4000;
+
+                const styleCard = (card, isActive) => {
+                    if (hasGSAP && !prefersReducedMotion) {
+                        gsap.to(card, {
+                            scale: isActive ? 1.06 : 0.95,
+                            zIndex: isActive ? 40 : 10,
+                            boxShadow: isActive
+                                ? '0 22px 48px rgba(15,23,42,0.20), 0 0 26px rgba(59,130,246,0.18)'
+                                : '0 10px 20px rgba(15,23,42,0.08)',
+                            duration: 0.35,
+                            ease: 'power2.out'
+                        });
+                    } else {
+                        card.style.transform = isActive ? 'scale(1.06)' : 'scale(0.95)';
+                        card.style.zIndex = isActive ? '40' : '10';
+                    }
+                };
+
+                const setActiveRole = (index) => {
+                    if (!roleItems[index]) return;
+
+                    activeIndex = index;
+                    const targetId = roleItems[index].getAttribute('data-target');
+
+                    roleItems.forEach((item, itemIndex) => {
+                        const isActive = itemIndex === index;
+                        item.classList.toggle('role-item-active', isActive);
+                        item.classList.toggle('border-transparent', !isActive);
+                        item.setAttribute('aria-pressed', String(isActive));
+                    });
+
+                    uiCards.forEach((card) => {
+                        styleCard(card, card.id === targetId);
+                    });
+
+                    roleScreens.forEach((screen) => {
+                        screen.classList.toggle('is-active', screen.getAttribute('data-role') === targetId);
+                    });
+                };
+
+                const stopAutoCycle = () => {
+                    if (cycleTimer) {
+                        clearInterval(cycleTimer);
+                        cycleTimer = null;
+                    }
+                };
+
+                const startAutoCycle = () => {
+                    stopAutoCycle();
+
+                    cycleTimer = setInterval(() => {
+                        if (hoveredIndex !== null || document.hidden) return;
+                        setActiveRole((activeIndex + 1) % roleItems.length);
+                    }, cycleDelayMs);
+                };
+
+                roleItems.forEach((item, index) => {
+                    item.setAttribute('role', 'button');
+                    item.setAttribute('tabindex', '0');
+
+                    const activate = () => {
+                        hoveredIndex = index;
+                        setActiveRole(index);
+                    };
+
+                    const release = () => {
+                        hoveredIndex = null;
+                        startAutoCycle();
+                    };
+
+                    item.addEventListener('mouseenter', activate);
+                    item.addEventListener('focus', activate);
+                    item.addEventListener('click', activate);
+                    item.addEventListener('mouseleave', release);
+                    item.addEventListener('blur', release);
+
+                    item.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            activate();
+                        }
+                    });
+                });
+
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        stopAutoCycle();
+                    } else {
+                        startAutoCycle();
+                    }
+                });
+
+                setActiveRole(0);
+                startAutoCycle();
+            }
+
+            function initOnboardingFlow() {
+                const section = document.getElementById('onboarding-flow');
+                const cards = Array.from(document.querySelectorAll('.onboarding-card'));
+                const svgPath = document.getElementById('onboarding-path');
+                const svgDrawPath = document.getElementById('onboarding-draw-path');
+                const container = document.getElementById('onboarding-svg-container');
+
+                if (!section || !cards.length || !svgPath || !svgDrawPath || !container) return;
+
+                let scrollTicking = false;
+                let resizeTicking = false;
+
+                const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+                const getCircleData = () => {
+                    const containerRect = container.getBoundingClientRect();
+
+                    return cards
+                        .map((card) => {
+                            const circle = card.querySelector('.step-circle');
+                            if (!circle) return null;
+
+                            const rect = circle.getBoundingClientRect();
+
+                            return {
+                                card,
+                                circle,
+                                x: rect.left - containerRect.left + rect.width / 2,
+                                y: rect.top - containerRect.top + rect.height / 2,
+                                viewportCenterY: rect.top + rect.height / 2
+                            };
+                        })
+                        .filter(Boolean);
+                };
+
+                const buildPath = (points) => {
+                    let d = '';
+
+                    points.forEach((point, index) => {
+                        if (index === 0) {
+                            d += `M ${point.x} ${point.y} `;
+                            return;
+                        }
+
+                        const prev = points[index - 1];
+
+                        if (window.innerWidth >= 768) {
+                            const dx = point.x - prev.x;
+                            const dy = point.y - prev.y;
+                            const arc = Math.max(28, Math.min(64, Math.abs(dx) * 0.16));
+                            const lift = index % 2 === 0 ? -arc : arc;
+                            d += `C ${prev.x + dx * 0.28} ${prev.y + lift}, ${prev.x + dx * 0.72} ${point.y + lift - dy * 0.08}, ${point.x} ${point.y} `;
+                        } else {
+                            const midY = prev.y + (point.y - prev.y) * 0.5;
+                            d += `C ${prev.x} ${midY}, ${point.x} ${midY}, ${point.x} ${point.y} `;
+                        }
+                    });
+
+                    return d;
+                };
+
+                const setCircleState = (progress) => {
+                    const steps = Math.max(1, cards.length - 1);
+
+                    cards.forEach((card, index) => {
+                        const circle = card.querySelector('.step-circle');
+                        if (!circle) return;
+
+                        const stepProgress = progress * steps;
+                        const isActive = stepProgress >= index - 0.02;
+                        const isCurrent = Math.abs(stepProgress - index) < 0.35;
+
+                        circle.classList.toggle('is-reached', isActive);
+                        circle.classList.toggle('is-current', isCurrent);
+                    });
+                };
+
+                const getDesktopProgress = () => {
+                    const rect = section.getBoundingClientRect();
+                    const start = window.innerHeight * 0.82;
+                    const end = window.innerHeight * 0.22;
+
+                    return clamp((start - rect.top) / (start - end), 0, 1);
+                };
+
+                const getMobileProgress = (points) => {
+                    if (points.length < 2) return 0;
+
+                    const triggerY = window.innerHeight * 0.5;
+                    const leadDistance = Math.min(170, window.innerHeight * 0.22);
+
+                    if (points[0].viewportCenterY > triggerY) {
+                        return clamp((triggerY + leadDistance - points[0].viewportCenterY) / leadDistance, 0, 0.22);
+                    }
+
+                    let segmentProgress = 0;
+
+                    for (let i = 0; i < points.length; i += 1) {
+                        if (points[i].viewportCenterY <= triggerY) {
+                            segmentProgress = i;
+                        }
+                    }
+
+                    for (let i = 0; i < points.length - 1; i += 1) {
+                        const nextPoint = points[i + 1];
+
+                        if (nextPoint.viewportCenterY > triggerY && nextPoint.viewportCenterY <= triggerY + leadDistance) {
+                            const partialSegment = clamp((triggerY + leadDistance - nextPoint.viewportCenterY) / leadDistance, 0, 1);
+                            segmentProgress = i + partialSegment;
+                            break;
+                        }
+                    }
+
+                    return clamp(segmentProgress / (points.length - 1), 0, 1);
+                };
+
+                const updateTrace = () => {
+                    const points = getCircleData();
+                    const progress = window.innerWidth >= 768 ? getDesktopProgress() : getMobileProgress(points);
+                    // Path uses pathLength="1000", so offsets are in normalized units
+                    const targetOffset = 1000 * (1 - progress);
+
+                    if (hasGSAP && !prefersReducedMotion) {
+                        gsap.to(svgDrawPath, {
+                            strokeDashoffset: targetOffset,
+                            duration: 0.32,
+                            ease: 'power2.out',
+                            overwrite: true
+                        });
+                    } else {
+                        svgDrawPath.style.strokeDashoffset = String(targetOffset);
+                    }
+
+                    setCircleState(progress);
+                    scrollTicking = false;
+                };
+
+                const drawLines = () => {
+                    const points = getCircleData();
+
+                    if (points.length < 2) return;
+
+                    const d = buildPath(points);
+                    svgPath.setAttribute('d', d);
+                    svgDrawPath.setAttribute('d', d);
+
+                    updateTrace();
+                    resizeTicking = false;
+                };
+
+                const requestUpdate = () => {
+                    if (scrollTicking) return;
+
+                    scrollTicking = true;
+                    requestAnimationFrame(updateTrace);
+                };
+
+                const requestRedraw = () => {
+                    if (resizeTicking) return;
+
+                    resizeTicking = true;
+                    requestAnimationFrame(drawLines);
+                };
+
+                window.addEventListener('resize', requestRedraw, { passive: true });
+                window.addEventListener('scroll', requestUpdate, { passive: true });
+
+                if (document.fonts?.ready) {
+                    document.fonts.ready.then(drawLines).catch(drawLines);
+                } else {
+                    drawLines();
+                }
+            }
+
+            initOnboardingFlow();
+        })();
+    </script>
+</body>
+</html>
